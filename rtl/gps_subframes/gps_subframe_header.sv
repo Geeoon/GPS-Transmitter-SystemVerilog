@@ -14,8 +14,7 @@
  * @param[out] out          the calculated first two words for each subframe
  */
 module gps_subframe_header #(
-    localparam bit [7:0] PREAMBLE=8'b10001011,
-    localparam
+    localparam bit [7:0] PREAMBLE=8'b10001011
 ) (
     // TLM
     input logic [13:0] tlm,
@@ -48,7 +47,7 @@ module gps_subframe_header #(
     assign how_data = { tow_count, alert, antispoof, subframe_id };
 
     // submodules
-    word_parity tlm_parity(
+    word_parity tlm_parity_m (
         .prev_parity0,
         .prev_parity1,
         .data_bits(tlm_data),
@@ -56,7 +55,7 @@ module gps_subframe_header #(
         .parity(tlm_parity)
     );
 
-    word_parity how_parity(
+    word_parity how_parity_m (
         .prev_parity0(tlm_parity[29]),
         .prev_parity1(tlm_parity[30]),
         .data_bits({ how_data, 2'b00 }),
@@ -75,7 +74,12 @@ module gps_subframe_header #(
     //      `D_28 ^= padding0`
     assign padding0 = how_int_parity[30] ^ padding1;
     assign padding1 = how_int_parity[29];
-    assing how_parity = how_int_parity ^ { padding0, padding1, 0, padding0, padding1, padding0 ^ padding1 };
+    assign how_parity[25] = how_int_parity[25] ^ padding0;
+    assign how_parity[26] = how_int_parity[26] ^ padding1;
+    assign how_parity[27] = how_int_parity[27];
+    assign how_parity[28] = how_int_parity[28] ^ padding0;
+    assign how_parity[29] = how_int_parity[29] ^ padding1;
+    assign how_parity[30] = how_int_parity[30] ^ padding0 ^ padding1;
 
     assign out = { tlm_data, tlm_parity, how_data, padding0, padding1, how_parity };
 
