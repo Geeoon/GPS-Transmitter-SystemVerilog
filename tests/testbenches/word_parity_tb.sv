@@ -57,5 +57,6 @@ module word_parity_tb();
         assert(parity == 6'b111100);
 
         $display(" ---- Testbench finished ---- ");
+        $finish;
     end  // initial
 endmodule  // word_parity_tb

@@ -28,11 +28,12 @@ module gps_subframe_header #(
     input logic [16:0] tow_count,
     input logic alert,
     input logic antispoof,
-    input logic subframe_id,
+    input logic[2:0] subframe_id,
 
     output logic [59:0] out
 
 );
+    /* verilator lint_off ASCRANGE */
     // internal wires
     logic [1:24] tlm_data;  // TLM word without parity
     logic [25:30] tlm_parity;
@@ -41,6 +42,7 @@ module gps_subframe_header #(
     logic padding0, padding1;  // padding used for parity calculation
     logic [25:30] how_int_parity;  // the intermediate parity calculation
     logic [25:30] how_parity;  // the actual parity sent over
+    /* verilator lint_on ASCRANGE */
 
     // wire assignments
     assign tlm_data = { PREAMBLE, tlm, integrity, reserved };
