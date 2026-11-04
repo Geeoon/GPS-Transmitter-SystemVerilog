@@ -2,3 +2,6 @@
 GPS L1 C/A Legacy transmitter implementation in SystemVerilog.  
 This project is only intended for research and educational use.  
 It is illegal to spoof or jam GPS signals.  Do not broadcast.
+
+## Overview
+This project aims to create a GPS LNAV transmitter module in SystemVerilog.
