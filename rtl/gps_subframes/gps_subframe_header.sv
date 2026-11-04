@@ -34,13 +34,12 @@ module gps_subframe_header #(
 
 );
     /* verilator lint_off ASCRANGE */
-    // internal wires
+    // intermediate signals
     logic [1:24] tlm_data;  // TLM word without parity
     logic [25:30] tlm_parity;
 
     logic [1:22] how_data;  // HOW without parity or padding
     logic padding0, padding1;  // padding used for parity calculation
-    logic [25:30] how_int_parity;  // the intermediate parity calculation
     logic [25:30] how_parity;  // the actual parity sent over
     /* verilator lint_on ASCRANGE */
 
@@ -57,31 +56,15 @@ module gps_subframe_header #(
         .parity(tlm_parity)
     );
 
-    word_parity how_parity_m (
+    word_solved_parity how_parity_m (
         .prev_parity0(tlm_parity[29]),
         .prev_parity1(tlm_parity[30]),
-        .data_bits({ how_data, 2'b00 }),
+        .data_bits(how_data),
 
-        .parity(how_int_parity)
+        .padding0,
+        .padding1,
+        .parity(how_parity)
     );
-
-    // parity last two bits of how data calculation
-    // to set D_29 to 0, we set `padding1 = D_29`
-    // to set D_30 to 0, we set padding0 ^ padding1 = D_30
-    // since we know padding1, we can set `padding0 = D_30 ^ padding1`
-    // because padding1 is used to calculate D_26
-    //      `D_26 ^= padding1`
-    // because padding0 is used to calculate D_25 and D_28
-    //      `D_25 ^= padding0`
-    //      `D_28 ^= padding0`
-    assign padding0 = how_int_parity[30] ^ padding1;
-    assign padding1 = how_int_parity[29];
-    assign how_parity[25] = how_int_parity[25] ^ padding0;
-    assign how_parity[26] = how_int_parity[26] ^ padding1;
-    assign how_parity[27] = how_int_parity[27];
-    assign how_parity[28] = how_int_parity[28] ^ padding0;
-    assign how_parity[29] = how_int_parity[29] ^ padding1;
-    assign how_parity[30] = how_int_parity[30] ^ padding0 ^ padding1;
 
     assign out = { tlm_data, tlm_parity, how_data, padding0, padding1, how_parity };
 
