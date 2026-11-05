@@ -6,6 +6,8 @@
  * @param[in] alert         whether or not the accuracy is satellite is healthy, should be set to 0 if normal
  * @param[in] antispoof     whether or not the P(Y) code is enabled, real GPS signals will set this to 1
  * @param[in] subframe_id   the subframe that this header belongs to
+ * @param[in] prev_parity0  bit 29 of the previous word (second to last parity bit)
+ * @param[in] prev_parity1  bit 30 of the previous word (last parity bit)
  * @param[out] out          the full word
  */
 module word_2 (

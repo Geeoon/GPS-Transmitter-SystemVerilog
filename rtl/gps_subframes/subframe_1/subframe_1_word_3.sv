@@ -6,7 +6,9 @@
  * @param[in] code          P-CODE (1) or C/A CODE (2).  Other values are "invalid".
  * @param[in] ura_index     accuracy of this satellite
  * @param[in] sv_health     health of the satellite ('0 for full health)
- * @param[in] iodc          2 MSB's of the issue of data clock
+ * @param[in] iodc          issue of data clock
+ * @param[in] prev_parity0  bit 29 of the previous word (second to last parity bit)
+ * @param[in] prev_parity1  bit 30 of the previous word (last parity bit)
  */
 module subframe_1_word_3 (
     input logic [9:0] week_number,
